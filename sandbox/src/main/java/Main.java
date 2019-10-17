@@ -1,11 +1,14 @@
+import main.java.NegativeNumberException;
+
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Scanner;
 
 public class Main {
 	public static void main (String[] args) {
-		intToString(5, 6, 7);
+		intToStringConverter(5, 6, 7);
 
-		stringToIntMet("1", "2");
+		stringToInt("1", "2");
 
 		/*String to int manual*/
 		StringToInt s = new StringToInt();
@@ -18,6 +21,7 @@ public class Main {
 		catch (SpecialCharException e) {
 			System.out.println(e.getMessage() + ", попробуйте снова." + "\n");
 		}
+		sc.close();
 
 		isOdd(5);
 
@@ -25,20 +29,32 @@ public class Main {
 
 		isSymbolInString('a', "qwerta");
 
+		System.out.println(isSymbolInString2('a', "asdfg") + "\n");
+
 		hoursToMinSec(5);
 
 		secondsToDMHS(321654);
 
-		toUpperCase("qwertyu");
+		transformString("qwertyu");
 
 		diameter(15);
 
-		System.out.println(isCover(15, 14, 21) + "\n");
+		try {
+			isCover(-3, 14, 21);
+		}
 
-		System.out.println(age(2, 12, 1993));
+		catch (NegativeNumberException e) {
+			System.out.println(e.getMessage());
+		}
+
+		calculateAge1(2, 12, 1993);
+
+//		calculateAge2 (2, 12, 1993);
+
+
 	}
 
-	public static void intToString (int a, int b, int c) {
+	public static void intToStringConverter(int a, int b, int c) {
 		String s1 = Integer.toString(a);
 		System.out.println(s1 + " " + ((Object) s1).getClass().getSimpleName());
 		String s2 = String.valueOf(b);
@@ -47,7 +63,7 @@ public class Main {
 		System.out.println(s3 + " " + ((Object) s3).getClass().getSimpleName() + '\n');
 	}
 
-	public static void stringToIntMet (String s1, String s2){
+	public static void stringToInt(String s1, String s2){
 		int a = Integer.parseInt(s1);
 		System.out.println(a + " " + ((Object) a).getClass().getSimpleName());
 		int b = Integer.valueOf(s2);
@@ -79,14 +95,15 @@ public class Main {
 				x = 1;
 				break;
 			}
-			else {
-				continue;
-			}
 		}
 		if (x == 0) {
 			System.out.println("Символ " + "'" + a + "'" + " не состоит в строке" + '\n');
 		}
 	}
+
+	public static boolean isSymbolInString2 (char a, String s) {
+	    return s.indexOf(a) == 0;
+    }
 
 	public static void hoursToMinSec (int hours) {
 		int minutes = hours * 60;
@@ -102,19 +119,18 @@ public class Main {
 		System.out.println(secondsTotal + " second(s) = " + days + " day(s) " + hours + " hour(s) " + minutes + " minute(s) " + seconds + " second(s)" + "\n");
 	}
 
-	public static void toUpperCase (String s) {
-		String done = "";
+	public static void transformString(String s) {
+		String result = "";
 		for (int i = 0; i < s.length(); i++) {
 			if (i == 0 || i % 2 == 0){
 				char upper = Character.toUpperCase(s.charAt(i));
-				done += upper;
-				continue;
+				result += upper;
 			}
 			else {
-				done += s.charAt(i);
+				result += s.charAt(i);
 			}
 		}
-		System.out.println(done + "\n");
+		System.out.println(result + "\n");
 	}
 
 	public static void diameter(int radius) {
@@ -122,27 +138,37 @@ public class Main {
 		double square = Math.PI * radius * radius;
 		System.out.println("r = " + radius + " S = " + square + " C = " + circumference + "\n");
 	}
-	public static boolean isCover(int a, int b, double radius) {
+	public static boolean isCover(int a, int b, double radius) throws NegativeNumberException {
 		double diagonal = Math.sqrt(a * a + b * b);
-		if (radius >= diagonal){
-			return true;
+		if (a < 0 || b < 0 || radius < 0) {
+			throw new NegativeNumberException("Введите положительное(ые) число(а)" + "\n");
 		}
 		else {
-			return false;
+			if (radius*2 >= diagonal){
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
+
 	}
 
-	public static int age (int dateOfBirth, int monthOfBirth, int yearOfBirth) {
-		LocalDate date = LocalDate.now();
-		int currentDate = date.getDayOfMonth();
-		int currentMonth = date.getMonthValue();
-		int currentYear = date.getYear();
-		int age = currentYear - yearOfBirth;
-		if (currentMonth < monthOfBirth || (currentDate < dateOfBirth & currentDate == dateOfBirth)) {
-			age --;
-		}
-		return age;
+	public static void calculateAge1(int dayOfBirth, int monthOfBirth, int yearOfBirth) {
+		LocalDate birthday = LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth);
+		Period age = Period.between(birthday, LocalDate.now());
+		System.out.println(age.getYears() + " years " + age.getMonths() + " months " + age.getDays() + " days");
 	}
+
+	/*public static void calculateAge2 (int dayOfBirth, int monthOfBirth, int yearOfBirth){
+		Calendar calendar = new GregorianCalendar(yearOfBirth, monthOfBirth, dayOfBirth);
+		Date currentDate = new Date();
+		long seconds = (currentDate.getTime() -  calendar.getTimeInMillis()) / 1000;
+		long years = seconds / 31536000;
+		long month = (seconds - years * 31536000) / 2592000;
+		long days = (seconds - month * 2592000 - years * 31536000) / 86400;
+		System.out.println(years + " years " + month + " months " + days + " days");
+	}*/
 
 
 }

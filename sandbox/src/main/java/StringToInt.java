@@ -29,8 +29,8 @@ public class StringToInt {
             }
         }
         done *= flag;
-        System.out.println(s + " " + ((Object) s).getClass().getName());
-        System.out.println(done + " " + ((Object) done).getClass().getName() + "\n");
+        System.out.println(s + " " + ((Object) s).getClass().getSimpleName());
+        System.out.println(done + " " + ((Object) done).getClass().getSimpleName() + "\n");
         return done;
 
     }
